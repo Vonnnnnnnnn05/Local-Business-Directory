@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('businesses', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('category_id')->constrained()->restrictOnDelete();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('contact_number');
+            $table->string('email')->nullable();
+            $table->string('address');
+            $table->string('city')->nullable();
+            $table->text('description');
+            $table->string('status')->default('pending');
+            $table->timestamps();
+
+            $table->index(['status', 'category_id']);
+            $table->index(['name', 'city']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('businesses');
+    }
+};
